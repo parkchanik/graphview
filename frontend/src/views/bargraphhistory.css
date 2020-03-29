@@ -1,0 +1,111 @@
+.mainPage {
+  background-color: white;
+  height: 50vh;
+  width: 100%;
+  text-align: center;
+}
+.leftcon {
+  float: left;
+  width: 150px;
+  background: #333;
+  color: #fff;
+  margin-right: 50px;
+}
+
+.rightcon {
+  float: left;
+  width: 600px;
+}
+
+.axisXFirst line {
+  stroke: #fafafa;
+}
+
+.axisXFirst path {
+  stroke: #fafafa;
+}
+.axisYFirst line {
+  stroke: #fafafa;
+}
+
+.axisYFirst path {
+  stroke: #fafafa;
+}
+/* 
+.axisXSecond line {
+  stroke: #fafafa;
+} */
+
+.axisXSecond path {
+  stroke: #fafafa;
+}
+.axisYSecond line {
+  stroke: #fafafa;
+}
+
+.axisYSecond path {
+  stroke: #fafafa;
+}
+
+.axisXThird line {
+  stroke: #fafafa;
+}
+
+.axisXThird path {
+  stroke: #fafafa;
+}
+.axisYThird line {
+  stroke: #fafafa;
+}
+
+.axisYThird path {
+  stroke: #fafafa;
+}
+
+.axisXThird2 line {
+  stroke: #fafafa;
+}
+
+.axisXThird2 path {
+  stroke: #fafafa;
+}
+.axisYThird2 line {
+  stroke: #fafafa;
+}
+
+.axisYThird2 path {
+  stroke: #fafafa;
+}
+
+.axisXFourth path {
+  stroke: #fafafa;
+}
+.axisYFourth line {
+  stroke: #fafafa;
+}
+
+.axisYFourth path {
+  stroke: #fafafa;
+}
+
+.axisXFifth path {
+  stroke: #fafafa;
+}
+.axisYFifth line {
+  stroke: #fafafa;
+}
+
+.axisYFifth path {
+  stroke: #fafafa;
+}
+
+/* 
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+.yAxis path {
+  stroke: #1a8006;
+} */

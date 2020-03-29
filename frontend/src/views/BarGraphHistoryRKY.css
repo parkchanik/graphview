@@ -1,0 +1,18 @@
+.mainPage {
+  background-color: #f1eff1;
+  height: 50vh;
+  width: 100%;
+  text-align: center;
+}
+.leftcon {
+  float: left;
+  width: 150px;
+  background: #333;
+  color: #fff;
+  margin-right: 50px;
+}
+
+.rightcon {
+  float: left;
+  width: 600px;
+}

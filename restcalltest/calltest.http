@@ -1,0 +1,112 @@
+
+GET http://localhost:9888/scrap/scrapcorona HTTP/1.1
+content-type: application/json
+
+#####
+
+GET http://localhost:9888/scrap/scrapcoronadbsave HTTP/1.1
+content-type: application/json
+######
+
+
+GET http://localhost:9888/scrap/getcoronadata1 HTTP/1.1
+content-type: application/json
+######
+
+GET http://localhost:9888/scrap/getcoronadatakorea HTTP/1.1
+content-type: application/json
+######
+
+GET http://localhost:9888/scrap/getcoronamanwomanage HTTP/1.1
+content-type: application/json
+######
+
+// 월드데이터 전체 저장
+GET http://localhost:9888/scrap/worldstatusalldave HTTP/1.1
+content-type: application/json
+######
+
+// 월드 데이터 오늘 어제 날짜 저장
+GET http://localhost:9888/scrap/worldstatusupdate HTTP/1.1
+content-type: application/json
+######
+
+// 한국 실시간 정보 
+GET http://localhost:9888/scrap/getcoronarealtime HTTP/1.1
+content-type: application/json
+######
+
+// 월드 데이터 
+GET http://localhost:9888/scrap/getcoronadataworldstatus HTTP/1.1
+content-type: application/json
+######
+
+// 국ㄴ 집단 내역
+GET http://localhost:9888/scrap/getcoronadatagroup HTTP/1.1
+content-type: application/json
+######
+
+// 월드 실시간
+GET http://localhost:9888/scrap/getworldrealtimelist HTTP/1.1
+content-type: application/json
+
+#####
+
+// 월드 데일리 리포트
+GET http://localhost:9888/scrap/worldnewdailyupdate HTTP/1.1
+content-type: application/json
+
+#####
+// 월드 데일리 리포트
+GET http://localhost:9888/scrap/worldnewdailylist HTTP/1.1
+content-type: application/json
+
+#####
+// 월드 데일리 리포트 새로운 버전
+GET http://localhost:9888/scrap/worldnewdailylistsummary HTTP/1.1
+content-type: application/json
+
+#####
+
+
+
+#####
+// 스크랩 https://www.worldometers.info/coronavirus/
+GET http://localhost:9888/scrap/Scrapworldometers HTTP/1.1
+content-type: application/json
+
+#####
+
+#####
+// 스크랩 RoyLab
+GET http://localhost:9888/scrap/ScrapRoyLab HTTP/1.1
+content-type: application/json
+
+#####
+
+// GET RoyLabData
+GET http://localhost:9888/scrap/getworlddatabyroylab HTTP/1.1
+content-type: application/json
+
+#####
+
+
+
+
+
+
+GET http://localhost:9888/scrap/scrapblue HTTP/1.1
+content-type: application/json
+######
+GET http://localhost:9888/gonggong/getmise HTTP/1.1
+content-type: application/json
+
+#####
+GET http://openapi.airkorea.or.kr/openapi/services/rest/getMsrstnList HTTP/1.1
+####
+
+GET http://openapi.airkorea.or.kr/openapi/services/rest/MsrstnInfoInqireSvc/getMsrstnList?addr=서울&stationName=종로구&pageNo=1&numOfRows=10&ServiceKey=obv4xWHTognbuGrTuYlp2h1fnS27G%2BoQYnXeKgHYP6RTZPZCur7lazL58BJxKNkbMxXZOKnM1S8EeKXye3CHAQ%3D%3D
+
+
+###
+GET http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getCtprvnMesureSidoLIst?serviceKey=obv4xWHTognbuGrTuYlp2h1fnS27G%2BoQYnXeKgHYP6RTZPZCur7lazL58BJxKNkbMxXZOKnM1S8EeKXye3CHAQ%3D%3D&numOfRows=10&pageNo=1&sidoName=%EC%84%9C%EC%9A%B8&searchCondition=DAILY
