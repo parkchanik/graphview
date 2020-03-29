@@ -1,11 +1,6 @@
 <Config>
      <QueryServerList>
         <QueryServer URI="localhost:9099/statusjson" Name="LOCAL:QS1" />   
-        <QueryServer URI="10.125.10.71:9099/statusjson" Name="OFFICE:DEV_ASIA-QS1" />
-        <QueryServer URI="10.12.188.171:9099/statusjson" Name="AWS:DEV_ASIA-QS1" />
-        <QueryServer URI="10.21.40.155:9098/statusjson" Name="AWS:DEV_USA-QS1" />
-        <QueryServer URI="10.12.175.107:9099/statusjson" Name="AWS:QA_ASIA-QS1" />
-        <QueryServer URI="10.21.40.155:9099/statusjson" Name="AWS:QA_USA-QS1" />
     </QueryServerList>     
      <AccountDB>
         <Info  Username="root" Password="08ch08ch" 
@@ -15,10 +10,8 @@
                ConnMaxLifetime="10" MaxIdleConns="10" MaxOpenConns="10"/>
     </AccountDB>
     <SessionDB>
-        <RedisInfo Region="DEV_ASIA_1" Addr="10.125.10.71:6379" ServerGroupID="DEV_ASIA_1" Password=""/> 
-        <RedisInfo Region="LOCAL" Addr="localhost:6379" ServerGroupID="OFFICE_DEV" Password=""/> 
-        
-    </SessionDB>
+          <RedisInfo Region="LOCAL" Addr="localhost:6379" ServerGroupID="OFFICE_DEV" Password=""/> 
+       </SessionDB>
     <LogConfig>
         <LogMap Key="ginlog" FileName="ginlog" FileExtension="log" MaxSize="1" MaxBackup="30" MaxAge="3" StdOut="Y" Debug="N" JSONFormat="N"/>
         <LogMap Key="serverlog" FileName="loginserverlog" FileExtension="log" MaxSize="1" MaxBackup="30" MaxAge="3" StdOut="N" Debug="Y" JSONFormat="N"/>
