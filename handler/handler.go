@@ -1286,7 +1286,7 @@ func (handler *Handler) GetCoronaDataWorldDailyNowList() ResultDataWorldNewDaily
 
 	worldrealtimestatus := handler.Ldb.AccountDB.GetWorldDailyNowList()
 
-	fmt.Println("GetCoronaDataWorldRealTime worldrealtimestatus", worldrealtimestatus)
+	//fmt.Println("GetCoronaDataWorldRealTime worldrealtimestatus", worldrealtimestatus)
 	result := ResultDataWorldNewDailyStatus{}
 
 	result.WorldNewStatusList = worldrealtimestatus
@@ -1301,7 +1301,7 @@ func (handler *Handler) GetCoronaDataWorldDailyNowListSummary() ResultDataWorldN
 
 	worldrealtimestatus := handler.Ldb.AccountDB.GetWorldDailyNowListSummary()
 
-	fmt.Println("GetCoronaDataWorldRealTime worldrealtimestatus", worldrealtimestatus)
+	//fmt.Println("GetCoronaDataWorldRealTime worldrealtimestatus", worldrealtimestatus)
 	result := ResultDataWorldNewDailyStatus{}
 
 	result.WorldNewStatusList = worldrealtimestatus

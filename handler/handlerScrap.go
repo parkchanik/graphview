@@ -179,36 +179,48 @@ func (handler *Handler) ScrapCollyCorona_roylabdata() error {
 					if n == 1 {
 						//fmt.Println("<td>: ", i, n, s.Text())
 						str := s.Text()
-						if strings.Contains(str, "'") {
-							str = strings.Replace(str, "'", "\\'", -1)
-						}
+						if str != "" {
 
-						roylabdata.Nation = str
+							if strings.Contains(str, "'") {
+								str = strings.Replace(str, "'", "\\'", -1)
+							}
+
+							roylabdata.Nation = str
+
+						}
 					}
 					if n == 2 {
 						//fmt.Println("<td>: ", i, n, s.Text())
 						str := s.Text()
-						confirmed, err := strconv.Atoi(str)
-						if err != nil {
-							fmt.Println("err :", err.Error())
+						if str != "" {
+							confirmed, err := strconv.Atoi(str)
+							if err != nil {
+								fmt.Println("err :", str, err.Error())
+							}
+							roylabdata.Confirmed = confirmed
 						}
-						roylabdata.Confirmed = confirmed
 					}
 					if n == 3 {
+						//fmt.Println("<td>: ", i, n, s.Text())
 						str := s.Text()
-						deaths, err := strconv.Atoi(str)
-						if err != nil {
-							fmt.Println("err :", err.Error())
+						if str != "" {
+							deaths, err := strconv.Atoi(str)
+							if err != nil {
+								fmt.Println("err :", str, err.Error())
+							}
+							roylabdata.Deaths = deaths
 						}
-						roylabdata.Deaths = deaths
 					}
 					if n == 4 {
+						//fmt.Println("<td>: ", i, n, s.Text())
 						str := s.Text()
-						recovered, err := strconv.Atoi(str)
-						if err != nil {
-							fmt.Println("err :", err.Error())
+						if str != "" {
+							recovered, err := strconv.Atoi(str)
+							if err != nil {
+								fmt.Println("err :", str, err.Error())
+							}
+							roylabdata.Recovered = recovered
 						}
-						roylabdata.Recovered = recovered
 					}
 				}
 

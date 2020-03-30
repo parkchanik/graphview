@@ -173,13 +173,13 @@ func (db *GormAccountDB) Getkoreahistory(updatetime string) []KoreaStatusList {
 	qry = qry + " ON A.updatetime = DATE_FORMAT(DATE_ADD(CAST(B.updatetime AS DATE), INTERVAL 1 DAY) , '%Y-%m-%d')"
 	//qry := "CALL P_CHALLENGEGEAR_SHCEDULE (? , ? , ? , ?);"
 
-	fmt.Println("before koreastatuslist ", koreastatuslist)
+	//fmt.Println("before koreastatuslist ", koreastatuslist)
 	if err := db.sqlgormdb.Raw(qry).Scan(&koreastatuslist).Error; err != nil {
 		// fmt.Println("error  :", err.Error())
 		return koreastatuslist
 	}
 
-	fmt.Println("after koreastatuslist ", koreastatuslist)
+	//fmt.Println("after koreastatuslist ", koreastatuslist)
 
 	return koreastatuslist
 
@@ -240,13 +240,13 @@ func (db *GormAccountDB) GetWorldStatusList(updatetime string) []WorldStatusList
 	qry = qry + " GROUP BY  A.countryname , B.countryname "
 	qry = qry + " ORDER BY  SUM(A.confirm_value) DESC "
 
-	fmt.Println("before koreastatuslist ", worldstatuslist)
+	//fmt.Println("before koreastatuslist ", worldstatuslist)
 	if err := db.sqlgormdb.Raw(qry).Scan(&worldstatuslist).Error; err != nil {
 		// fmt.Println("error  :", err.Error())
 		return worldstatuslist
 	}
 
-	fmt.Println("after koreastatuslist ", worldstatuslist)
+	//fmt.Println("after koreastatuslist ", worldstatuslist)
 
 	return worldstatuslist
 
@@ -394,13 +394,13 @@ func (db *GormAccountDB) GetWorldDailyNowList() []WorldNewStatus {
 	qry = qry + " LEFT JOIN CountryInfo B "
 	qry = qry + "  ON A.country = B.ExcelCountry  "
 
-	fmt.Println("before koreastatuslist ", worldnewstatuslist)
+	//fmt.Println("before koreastatuslist ", worldnewstatuslist)
 	if err := db.sqlgormdb.Raw(qry).Scan(&worldnewstatuslist).Error; err != nil {
 		// fmt.Println("error  :", err.Error())
 		return worldnewstatuslist
 	}
 
-	fmt.Println("after koreastatuslist ", worldnewstatuslist)
+	//fmt.Println("after koreastatuslist ", worldnewstatuslist)
 
 	return worldnewstatuslist
 
@@ -421,13 +421,13 @@ func (db *GormAccountDB) GetWorldDailyNowListSummary() []WorldNewStatus {
 	qry = qry + " ON A.Excelcountry = B.ExcelCountry   "
 	qry = qry + " ORDER BY A.confirmed DESC "
 
-	fmt.Println("before koreastatuslist ", worldnewstatuslist)
+	//fmt.Println("before koreastatuslist ", worldnewstatuslist)
 	if err := db.sqlgormdb.Raw(qry).Scan(&worldnewstatuslist).Error; err != nil {
 		// fmt.Println("error  :", err.Error())
 		return worldnewstatuslist
 	}
 
-	fmt.Println("after koreastatuslist ", worldnewstatuslist)
+	//fmt.Println("after koreastatuslist ", worldnewstatuslist)
 
 	return worldnewstatuslist
 
@@ -450,13 +450,13 @@ func (db *GormAccountDB) GetWorldDailyNowListContinent(continent string) []World
 	qry = qry + "  ON A.country = B.ExcelCountry  "
 	qry = qry + "   WHERE B.Continent LIKE '%" + continent + "%' "
 
-	fmt.Println("before koreastatuslist ", worldnewstatuslist)
+	//fmt.Println("before koreastatuslist ", worldnewstatuslist)
 	if err := db.sqlgormdb.Raw(qry).Scan(&worldnewstatuslist).Error; err != nil {
 		// fmt.Println("error  :", err.Error())
 		return worldnewstatuslist
 	}
 
-	fmt.Println("after koreastatuslist ", worldnewstatuslist)
+	//fmt.Println("after koreastatuslist ", worldnewstatuslist)
 
 	return worldnewstatuslist
 
@@ -494,7 +494,7 @@ func (db *GormAccountDB) GetWorldDailyStatusSummaryByCountry() []WorldNewStatusS
 	qry = qry + " FROM   WorldNewStatus  "
 	qry = qry + " GROUP BY Country  "
 
-	fmt.Println("before koreastatuslist ", worldnewstatuslist)
+	//fmt.Println("before koreastatuslist ", worldnewstatuslist)
 	if err := db.sqlgormdb.Raw(qry).Scan(&worldnewstatuslist).Error; err != nil {
 		// fmt.Println("error  :", err.Error())
 		return worldnewstatuslist

@@ -222,3 +222,28 @@ export const getCoronaWorldNewDailyListSummary = () => {
   });
   return promise;
 };
+
+export const getCoronaWorldroylab = () => {
+  var address = "http://localhost:9888/scrap/getworlddatabyroylab";
+
+  let promise = new Promise(resolve => {
+    fetch(address)
+      .then(results => results.json())
+      .then(jsonData => {
+        //console.log("jsondata");
+        //console.log(jsonData);
+
+        resolve({
+          coronadata: jsonData
+        });
+      })
+      .then(data => {
+        console.log("fetch then-- data", data);
+      })
+      .catch(error => {
+        console.log("error");
+        console.log(error);
+      });
+  });
+  return promise;
+};

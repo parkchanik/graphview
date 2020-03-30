@@ -16,6 +16,8 @@ import { getCoronaWorldNewDailyList } from "../services/getdata";
 import { getCoronaWorldNewDailyListByContinent } from "../services/getdata";
 import { getCoronaWorldNewDailyListSummary } from "../services/getdata";
 
+import { getCoronaWorldroylab } from "../services/getdata";
+
 //import csvdata from "./readmelocal.csv";
 //import ryukimyangcsv from "./ryukimyang.csv";
 import ryukimyangcsv from "./data/LIMSEVEN.csv";
@@ -225,9 +227,9 @@ export class CoronaWorldList extends Component {
       this.getMainList("MainSub");
     }, 5000);
 
-    this.mainSubInter2 = setInterval(() => {
-      this.MoveGroup();
-    }, 10000);
+    // this.mainSubInter2 = setInterval(() => {
+    //   this.MoveGroup();
+    // }, 10000);
 
     this.myInterval = setInterval(() => {
       this.countdown = this.countdown - 1;
@@ -261,20 +263,6 @@ export class CoronaWorldList extends Component {
   testgo() {
     console.log("testgo 111111------");
     this.getMainInfo();
-    // setTimeout(
-    //   function() {
-    //     this.getMainInfo();
-    //   }.bind(this),
-    //   1000
-    // );
-
-    // console.log("testgo 222222------");
-    // setTimeout(
-    //   function() {
-    //     this.getSecondInfo();
-    //   }.bind(this),
-    //   7000
-    // );
   }
   componentWillMount() {
     //this.dataFromTSV();
@@ -291,16 +279,10 @@ export class CoronaWorldList extends Component {
   }
 
   async getMainList(num) {
-    const { coronadata } = await getCoronaWorldNewDailyListSummary();
+    const { coronadata } = await getCoronaWorldroylab();
 
     this.SetMainDataList(coronadata);
   }
-
-  // async getMainSub(num) {
-  //   const { coronadata } = await getCoronaWorldNewDailyListByContinent();
-
-  //   this.SetSubMainData(coronadata);
-  // }
 
   async getInfo(num) {
     try {
@@ -329,42 +311,6 @@ export class CoronaWorldList extends Component {
         .transition()
         // .duration(500)
         .attr("transform", "translate(600,2600)");
-      // if (num == "First") {
-      //   const { coronadata } = await getCoronaFirst();
-
-      //   this.SetFirstData(coronadata);
-      // }
-
-      // if (num == "Second") {
-      //   const { coronadata } = await getCoronaSecond();
-
-      //   console.log("coronadata ----- ", coronadata);
-
-      //   this.SetSecondData(coronadata);
-      // }
-
-      // if (num == "Third") {
-      //   const { coronadata } = await getCoronaThird();
-
-      //   console.log("coronadata ----- ", coronadata);
-
-      //   this.SetThirdData(coronadata);
-      // }
-
-      // if (num == "Fourth") {
-      //   const { coronadata } = await getCoronaThird(); // getCoronaThird 같은데이터쓴다
-
-      //   console.log("coronadata ----- ", coronadata);
-
-      //   this.SetFourthData(coronadata);
-      // }
-      // if (num == "Fifth") {
-      //   const { coronadata } = await getCoronaThird(); // getCoronaThird 같은데이터쓴다
-
-      //   console.log("coronadata ----- ", coronadata);
-
-      //   this.SetFifthData(coronadata);
-      // }
     } catch (error) {
       console.log("error", error);
     }
@@ -387,9 +333,7 @@ export class CoronaWorldList extends Component {
 
     console.log("SetCountryInfo : ", svgname);
     console.log("SetCountryInfo Data : ", data);
-    var deformat = function(val, postfix) {
-      return Number(val.replace(postfix, "").replace(/\,/g, ""));
-    };
+
     var format = ",.0f";
 
     console.log("confirmed", confirmed);
@@ -449,9 +393,9 @@ export class CoronaWorldList extends Component {
     barEnterdata2
       .append("image")
       .attr("x", 7)
-      .attr("y", -35)
+      .attr("y", -45)
       .attr("height", "35")
-      .attr("width", "50")
+      .attr("width", "35")
       .attr("href", function(d) {
         if (d.Name1 == "중국") {
           return "./PNG/china.png";
@@ -469,19 +413,53 @@ export class CoronaWorldList extends Component {
       .append("text")
       .style("fill", d => this.getColor(d))
       .attr("fill-opacity", 0)
-      //  .attr("font-family", "BMDOHYEON")
+      .attr("font-family", "BMDOHYEON")
       .transition()
       .duration(1500)
       .text(function(d) {
         return d.Name1;
       })
       .attr("fill-opacity", 1)
-      .attr("font-size", "20px")
+      .attr("font-size", "23px")
       .attr("class", "valueSubMain")
       .attr("text-anchor", "start")
       .attr("x", 60)
-      .attr("y", -25);
+      .attr("y", -20);
 
+    var deformat = function(val, postfix) {
+      return Number(val.replace(postfix, "").replace(/\,/g, ""));
+    };
+
+    barEnterdata2
+      .append("text")
+      .transition()
+      .duration(1500)
+      .style("fill", d => this.getColor(d))
+      .attr("font-family", "Righteous")
+      .tween("text", function(d) {
+        var self = this;
+
+        var nowdata = d.Confirmed + "/" + d.Deaths + "/" + d.Recovered;
+        var i = d3.interpolateString("0/0/0", nowdata);
+        // var i = d3.interpolate(
+        //   deformat(self.textContent, ""),
+        //   Number(d.Confirmed)
+        // );
+        var prec = (Number(d.Confirmed) + "").split("."),
+          round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
+        return function(t) {
+          self.textContent = i(t);
+          // d3.format(format)(Math.round(i(t) * round) / round) + "";
+        };
+      })
+      .attr("fill-opacity", 1)
+      .attr("font-size", "20px")
+      .attr("class", "valueSubMainc")
+      .attr("text-anchor", "start")
+      .attr("x", 10)
+      .attr("y", 5);
+
+    /*
     barEnterdata2
       .append("text")
       .transition()
@@ -535,7 +513,7 @@ export class CoronaWorldList extends Component {
       .attr("text-anchor", "end")
       .attr("x", 220)
       .attr("y", 0);
-
+      */
     let barupdate = bardata2
       .transition("2")
       //.duration(1000)
@@ -558,39 +536,39 @@ export class CoronaWorldList extends Component {
     // .attr("lang", "zh")
 
     if (this.langtype == 1) {
-      textupdate.text(function(d) {
+      textupdate.attr("font-family", "BMDOHYEON").text(function(d) {
         var text = d.Name1;
         var len = text.length;
         if (len > 10) {
           return text.substring(0, 10) + "...";
         }
-        return d.Name1;
+        return d.Name1; //  한국어
       });
     }
 
     if (this.langtype == 2) {
-      textupdate.text(function(d) {
+      textupdate.attr("font-family", "Fjalla One").text(function(d) {
         var text = d.Name2;
         var len = text.length;
         if (len > 10) {
           return text.substring(0, 10) + "...";
         }
-        return d.Name2;
+        return d.Name2; //스페인어
       });
     }
     if (this.langtype == 3) {
-      textupdate.text(function(d) {
+      textupdate.attr("font-family", "Noto Sans SC").text(function(d) {
         var text = d.Name3;
         var len = text.length;
         if (len > 10) {
           return text.substring(0, 10) + "...";
         }
-        return d.Name3;
+        return d.Name3; // 중국어
       });
     }
 
     if (this.langtype == 4) {
-      textupdate.text(function(d) {
+      textupdate.attr("font-family", "Fjalla One").text(function(d) {
         var text = d.Name4;
         var len = text.length;
         if (len > 10) {
@@ -599,8 +577,19 @@ export class CoronaWorldList extends Component {
         return d.Name4;
       });
     }
+    if (this.langtype == 5) {
+      textupdate.attr("font-family", "Kosugi Maru").text(function(d) {
+        var text = d.Name5;
 
-    if (this.langtype >= 4) {
+        var len = text.length;
+        if (len > 10) {
+          return text.substring(0, 10) + "...";
+        }
+        return d.Name5;
+      });
+    }
+
+    if (this.langtype >= 5) {
       this.langtype = 1;
     } else {
       this.langtype = this.langtype + 1;
@@ -613,15 +602,18 @@ export class CoronaWorldList extends Component {
       .duration(1500)
       .tween("text", function(d) {
         var self = this;
-        var i = d3.interpolate(
-          deformat(self.textContent, ""),
-          Number(d.Confirmed)
-        );
+
+        var nowdata = d.Confirmed + "/" + d.Deaths + "/" + d.Recovered;
+        var i = d3.interpolateString(self.textContent, nowdata);
+        // var i = d3.interpolate(
+        //   deformat(self.textContent, ""),
+        //   Number(d.Confirmed)
+        // );
         var prec = (Number(d.Confirmed) + "").split("."),
           round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
         return function(t) {
-          self.textContent =
-            d3.format(format)(Math.round(i(t) * round) / round) + "";
+          self.textContent = i(t);
+          // d3.format(format)(Math.round(i(t) * round) / round) + "";
         };
       });
   }
@@ -630,7 +622,7 @@ export class CoronaWorldList extends Component {
     console.log("coronadata : ", coronadata);
 
     /*
-    europe:
+    europe: 
     Totalconfirmed: 17922
     Totaldeath: 710
     Totalrecovered: 807

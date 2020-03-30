@@ -1,15 +1,29 @@
 body {
   overflow: hidden;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif, "Do Hyeon";
+  font-family: "Kosugi Maru", "Fjalla One", "Baloo Thambi 2", "Noto Sans SC",
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif,
+    "Do Hyeon";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@import url("https://fonts.googleapis.com/css?family=Noto+Sans+SC&display=swap");
+
+@import url("https://fonts.googleapis.com/css?family=Baloo+Thambi+2|Fjalla+One|Kosugi+Maru&display=swap");
+
 @font-face {
   font-family: "BMDOHYEON";
   src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMDOHYEON.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Noto Sans SC";
+  src: url("https://fonts.googleapis.com/css?family=Noto+Sans+SC|ZCOOL+XiaoWei&display=swap")
     format("woff");
   font-weight: normal;
   font-style: normal;

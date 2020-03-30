@@ -27,7 +27,7 @@ func (db *GormAccountDB) SetRoyLabData(Nation string, Confirmed, Deaths, Recover
 	sql = sql + " , Deaths = IF ( Deaths < " + deaths + "," + deaths + ", Deaths)"
 	sql = sql + " , Recovered = IF ( Recovered < " + recoverd + "," + recoverd + ", Recovered)"
 
-	fmt.Println(sql)
+	//fmt.Println(sql)
 
 	if err := db.sqlgormdb.Exec(sql).Error; err != nil {
 

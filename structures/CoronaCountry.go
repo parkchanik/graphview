@@ -295,6 +295,8 @@ type WorldNewStatus struct {
 	Name2       string
 	Name3       string
 	Name4       string
+	Name5       string
+	Name6       string
 	Confirmed   int
 	Deaths      int
 	Recovered   int
