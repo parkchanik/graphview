@@ -273,6 +273,14 @@ type ResultDataWorldNewDailyStatus struct {
 	//SecondInfo    SecondInfo        `json:"secondinfo"`
 }
 
+type ResultDataWorldNewDailyStatusName struct {
+	WorldNewStatusList  []WorldNewStatusName `json:"worldrealtimelist"`
+	WorldNewStatusTotal WorldNewStatusName   `json:"worldtotal`
+	WorldNewStatusTop   WorldNewStatusName   `json:"worldtop`
+	LangType            int                  `json:"langtype"`
+	//SecondInfo    SecondInfo        `json:"secondinfo"`
+}
+
 type ResultDataWorldNewDailyStatusByContinent struct {
 	Europe  WorldNewStatusbyContinent `json:"europe"`
 	Asia    WorldNewStatusbyContinent `json:"asia"`
@@ -297,6 +305,16 @@ type WorldNewStatus struct {
 	Name4       string
 	Name5       string
 	Name6       string
+	Confirmed   int
+	Deaths      int
+	Recovered   int
+	Continent   string
+}
+
+type WorldNewStatusName struct {
+	Countrycode string
+	Country     string
+	Name        string
 	Confirmed   int
 	Deaths      int
 	Recovered   int

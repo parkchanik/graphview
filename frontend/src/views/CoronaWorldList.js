@@ -17,7 +17,7 @@ import { getCoronaWorldNewDailyListByContinent } from "../services/getdata";
 import { getCoronaWorldNewDailyListSummary } from "../services/getdata";
 
 import { getCoronaWorldroylab } from "../services/getdata";
-
+import { getCoronaWorldroylabname } from "../services/getdata";
 //import csvdata from "./readmelocal.csv";
 //import ryukimyangcsv from "./ryukimyang.csv";
 import ryukimyangcsv from "./data/LIMSEVEN.csv";
@@ -43,7 +43,7 @@ export class CoronaWorldList extends Component {
       xAxisAttributeIP: "IP",
 
       width: 2000,
-      height: 1100
+      height: 1100,
     };
     this.chartRef = React.createRef();
     this.drawChart = this.drawChart.bind(this);
@@ -57,17 +57,11 @@ export class CoronaWorldList extends Component {
     this.xfirst = null;
     //.domain([0, 70000]); // this.state.width]);
 
-    this.xfirst2 = d3
-      .scaleLinear()
-      .range([0, 650])
-      .domain([0, 100]); // this.state.width]);
+    this.xfirst2 = d3.scaleLinear().range([0, 650]).domain([0, 100]); // this.state.width]);
 
     this.yfirst = null;
 
-    this.yfirst2 = d3
-      .scaleBand()
-      .range([600, 1000])
-      .padding(0.1); // this.state.height]);
+    this.yfirst2 = d3.scaleBand().range([600, 1000]).padding(0.1); // this.state.height]);
 
     this.xsecond = null;
     this.ysecond = null;
@@ -178,12 +172,12 @@ export class CoronaWorldList extends Component {
 
     this.mainsubtext1 = svgTitle
       .append("text")
-      .text("COVID-19 WORLD COUNT")
-      .attr("x", 30)
-      .attr("y", 60)
+      .text("CORONAVIRUS COVID-19 WORLD REALTIME COUNT")
+      .attr("x", 950)
+      .attr("y", 90)
       .attr("fill", "#FAFAFA")
-      .attr("font-family", "BMDOHYEON")
-      .style("text-anchor", "start")
+      .attr("font-family", "Fjalla One")
+      .style("text-anchor", "middle")
       .attr("font-size", "80px");
 
     this.mainsubtext2 = svgTitle
@@ -221,15 +215,19 @@ export class CoronaWorldList extends Component {
   componentDidMount() {
     this.drawChart();
 
-    this.getMainList("MainSub");
+    this.getMainList(1);
 
     this.mainSubInterval = setInterval(() => {
-      this.getMainList("MainSub");
+      this.getMainList(this.langtype);
+      this.langtype = this.langtype + 1;
+      if (this.langtype >= 6) {
+        this.langtype = 1;
+      }
     }, 5000);
-
-    // this.mainSubInter2 = setInterval(() => {
-    //   this.MoveGroup();
-    // }, 10000);
+    this.MoveGroup();
+    this.mainSubInter2 = setInterval(() => {
+      this.MoveGroup();
+    }, 110000);
 
     this.myInterval = setInterval(() => {
       this.countdown = this.countdown - 1;
@@ -269,17 +267,21 @@ export class CoronaWorldList extends Component {
   }
 
   async MoveGroup() {
-    d3.select(".List")
-      .transition()
-      .duration(5000)
-      .attr("transform", "translate(-250,50)")
-      .transition()
-      .duration(3000)
-      .attr("transform", "translate(10,50)");
+    var t = d3.transition().duration(50000).ease(d3.easeLinear);
+
+    d3.select(".ListBottom")
+      .transition(t)
+      //.ease("linear")
+      .attr("transform", "translate(-6700,1050)")
+      .transition(t)
+
+      // .duration(30000)
+      //.ease("linear")
+      .attr("transform", "translate(10,1050)");
   }
 
   async getMainList(num) {
-    const { coronadata } = await getCoronaWorldroylab();
+    const { coronadata } = await getCoronaWorldroylabname(num);
 
     this.SetMainDataList(coronadata);
   }
@@ -320,7 +322,7 @@ export class CoronaWorldList extends Component {
     path = path || "data.tsv";
     console.log(path);
 
-    d3.csv(ryukimyangcsv).then(data => {
+    d3.csv(ryukimyangcsv).then((data) => {
       console.log("dataFromTSV data", data);
       this.alldata = data;
 
@@ -328,7 +330,387 @@ export class CoronaWorldList extends Component {
     });
   }
 
-  SetCountryInfo(svgname, data, confirmed, deaths, recovered) {
+  SetTotalInfo(svgname, totaldata, langtype) {
+    let svg = d3.select("." + svgname);
+
+    let bardata = svg.selectAll(".bartotal").data(totaldata.Country);
+
+    var bartotal = bardata
+      .enter()
+      .insert("g", ".axistotal")
+      .attr("class", "bartotal")
+      .attr("transform", "translate(0,100)");
+
+    bartotal
+      .append("rect")
+      .attr("x", 0)
+      .attr("class", "totalrect")
+      .attr("width", 470)
+      .attr("height", 120) //y.bandwidth() - 30)
+      .attr("fill", "none")
+      .attr("stroke", "white")
+      .attr("stroke-width", "0.5px")
+      .attr("y", -45);
+    console.log("totaldata", totaldata);
+    // .attr("font-family", "BMDOHYEON")
+    bartotal
+      .append("text")
+      .style("fill", (d) => this.getColor(d))
+      .attr("fill-opacity", 0)
+      .attr("font-family", function (d) {
+        if (langtype == 1) {
+          return "BMDOHYEON";
+        } else if (langtype == 2) {
+          return "Fjalla One";
+        } else if (langtype == 3) {
+          return "Noto Sans SC";
+        } else if (langtype == 4) {
+          return "Fjalla One";
+        } else if (langtype == 5) {
+          return "Kosugi Maru";
+        } else if (langtype == 6) {
+          return "Fjalla One";
+        }
+      })
+      .text(function (d) {
+        let str = totaldata.Name;
+        let str_array = str.split(",");
+        return str_array[0];
+      })
+      .attr("fill-opacity", 1)
+      .attr("font-size", "41px")
+      .attr("class", "totalvaluetext")
+      .attr("text-anchor", "middle")
+      .attr("x", 230)
+      .attr("y", -5);
+
+    bartotal
+      .append("text")
+      .style("fill", (d) => this.getColor(d))
+      .attr("fill-opacity", 0)
+      .attr("font-family", function (d) {
+        if (langtype == 1) {
+          return "BMDOHYEON";
+        } else if (langtype == 2) {
+          return "Fjalla One";
+        } else if (langtype == 3) {
+          return "Noto Sans SC";
+        } else if (langtype == 4) {
+          return "Fjalla One";
+        } else if (langtype == 5) {
+          return "Kosugi Maru";
+        } else if (langtype == 6) {
+          return "Fjalla One";
+        }
+      })
+      .text(function (d) {
+        let str = totaldata.Name;
+        let str_array = str.split(",");
+        return str_array[1];
+      })
+      .attr("fill-opacity", 1)
+      .attr("font-size", "25px")
+      .attr("class", "totalvaluetext1")
+      .attr("text-anchor", "middle")
+      .attr("x", 80)
+      .attr("y", 30);
+
+    bartotal
+      .append("text")
+      .style("fill", (d) => this.getColor(d))
+      .attr("fill-opacity", 0)
+      .attr("font-family", function (d) {
+        if (langtype == 1) {
+          return "BMDOHYEON";
+        } else if (langtype == 2) {
+          return "Fjalla One";
+        } else if (langtype == 3) {
+          return "Noto Sans SC";
+        } else if (langtype == 4) {
+          return "Fjalla One";
+        } else if (langtype == 5) {
+          return "Kosugi Maru";
+        } else if (langtype == 6) {
+          return "Fjalla One";
+        }
+      })
+      .text(function (d) {
+        let str = totaldata.Name;
+        let str_array = str.split(",");
+        return str_array[2];
+      })
+      .attr("fill-opacity", 1)
+      .attr("font-size", "25px")
+      .attr("class", "totalvaluetext2")
+      .attr("text-anchor", "middle")
+      .attr("x", 230)
+      .attr("y", 30);
+
+    bartotal
+      .append("text")
+      .style("fill", (d) => this.getColor(d))
+      .attr("fill-opacity", 0)
+      .attr("font-family", function (d) {
+        if (langtype == 1) {
+          return "BMDOHYEON";
+        } else if (langtype == 2) {
+          return "Fjalla One";
+        } else if (langtype == 3) {
+          return "Noto Sans SC";
+        } else if (langtype == 4) {
+          return "Fjalla One";
+        } else if (langtype == 5) {
+          return "Kosugi Maru";
+        } else if (langtype == 6) {
+          return "Fjalla One";
+        }
+      })
+      .text(function (d) {
+        let str = totaldata.Name;
+        let str_array = str.split(",");
+        return str_array[3];
+      })
+      .attr("fill-opacity", 1)
+      .attr("font-size", "25px")
+      .attr("class", "totalvaluetext3")
+      .attr("text-anchor", "middle")
+      .attr("x", 380)
+      .attr("y", 30);
+
+    var format = ",.0f";
+    var confirmtext = bartotal
+      .append("text")
+      .transition()
+      .duration(1500)
+      .style("fill", (d) => this.getColor(d))
+      .attr("font-family", "Play")
+      .attr("fill-opacity", 1)
+      .attr("font-size", "35px")
+      .attr("class", "valuetotalc")
+      .attr("text-anchor", "middle")
+      .attr("x", 80)
+      .attr("y", 65)
+      .textTween(function (d) {
+        var nowdata = totaldata.Confirmed;
+        var i = d3.interpolateRound(0, nowdata);
+
+        //console.log("iiii", i);y
+
+        return function (t) {
+          return d3.format(format)(i(t)); //i;
+        };
+      });
+
+    bartotal
+      .append("text")
+      .transition()
+      .duration(1500)
+      .style("fill", (d) => this.getColor(d))
+      .attr("font-family", "Play")
+      .textTween(function (d) {
+        var nowdata = totaldata.Deaths;
+        var i = d3.interpolateRound(0, nowdata);
+
+        return function (t) {
+          return d3.format(format)(i(t)); //i;
+        };
+      })
+      .attr("fill-opacity", 1)
+      .attr("font-size", "35px")
+      .attr("class", "valuetotald")
+      .attr("text-anchor", "middle")
+      .attr("x", 230)
+      .attr("y", 65);
+
+    bartotal
+      .append("text")
+      .style("fill", (d) => this.getColor(d))
+      .attr("fill-opacity", 0)
+      .attr("font-family", "Play")
+      .transition()
+      .duration(1500)
+      .textTween(function (d) {
+        var nowdata = totaldata.Recovered;
+        var i = d3.interpolateRound(0, nowdata);
+
+        //console.log("iiii", i);
+        return function (t) {
+          return d3.format(format)(i(t)); //i;
+        };
+      })
+      .attr("fill-opacity", 1)
+      .attr("y", 0)
+      .attr("font-size", "35px")
+      .attr("class", "valuetotalr")
+      .attr("text-anchor", "middle")
+      .attr("x", 380)
+      .attr("y", 65);
+
+    let barupdate = bardata.transition("2").ease(d3.easeLinear);
+
+    var textupdate = barupdate
+      .select(".totalvaluetext")
+      .transition()
+      .duration(1500)
+      .attr("font-family", function (d) {
+        if (langtype == 1) {
+          return "BMDOHYEON";
+        } else if (langtype == 2) {
+          return "Fjalla One";
+        } else if (langtype == 3) {
+          return "Noto Sans SC";
+        } else if (langtype == 4) {
+          return "Fjalla One";
+        } else if (langtype == 5) {
+          return "Kosugi Maru";
+        } else if (langtype == 6) {
+          return "Fjalla One";
+        }
+      })
+      .text(function (d) {
+        let str = totaldata.Name;
+        let str_array = str.split(",");
+
+        return str_array[0];
+      });
+
+    bardata
+      .select(".totalvaluetext1")
+      .transition()
+      .duration(1500)
+      .attr("font-family", function (d) {
+        if (langtype == 1) {
+          return "BMDOHYEON";
+        } else if (langtype == 2) {
+          return "Fjalla One";
+        } else if (langtype == 3) {
+          return "Noto Sans SC";
+        } else if (langtype == 4) {
+          return "Fjalla One";
+        } else if (langtype == 5) {
+          return "Kosugi Maru";
+        } else if (langtype == 6) {
+          return "Fjalla One";
+        }
+      })
+      .text(function (d) {
+        let str = totaldata.Name;
+        let str_array = str.split(",");
+        return str_array[1];
+      });
+
+    bardata
+      .select(".totalvaluetext2")
+      .transition()
+      .duration(1500)
+      .attr("font-family", function (d) {
+        if (langtype == 1) {
+          return "BMDOHYEON";
+        } else if (langtype == 2) {
+          return "Fjalla One";
+        } else if (langtype == 3) {
+          return "Noto Sans SC";
+        } else if (langtype == 4) {
+          return "Fjalla One";
+        } else if (langtype == 5) {
+          return "Kosugi Maru";
+        }
+      })
+      .text(function (d) {
+        let str = totaldata.Name;
+        let str_array = str.split(",");
+        return str_array[2];
+      });
+
+    bardata
+      .select(".totalvaluetext3")
+      .transition()
+      .duration(1500)
+      .attr("font-family", function (d) {
+        if (langtype == 1) {
+          return "BMDOHYEON";
+        } else if (langtype == 2) {
+          return "Fjalla One";
+        } else if (langtype == 3) {
+          return "Noto Sans SC";
+        } else if (langtype == 4) {
+          return "Fjalla One";
+        } else if (langtype == 5) {
+          return "Kosugi Maru";
+        }
+      })
+      .text(function (d) {
+        let str = totaldata.Name;
+        let str_array = str.split(",");
+        return str_array[3];
+      });
+
+    var deformat = function (val, postfix) {
+      return Number(val.replace(postfix, "").replace(/\,/g, ""));
+    };
+
+    bardata
+      .select(".valuetotalc")
+      .transition()
+      .duration(1500)
+      .textTween(function (d) {
+        var nowdata = totaldata.Confirmed;
+        var self = this;
+        var oldnum = deformat(self.textContent, "");
+        var i = d3.interpolateRound(oldnum, nowdata);
+
+        return function (t) {
+          return d3.format(format)(i(t)); //i;
+        };
+      });
+
+    bardata
+      .select(".valuetotalc")
+      .transition()
+      .duration(1500)
+      .textTween(function (d) {
+        var nowdata = totaldata.Confirmed;
+        var self = this;
+        var oldnum = deformat(self.textContent, "");
+        var i = d3.interpolateRound(oldnum, nowdata);
+
+        return function (t) {
+          return d3.format(format)(i(t)); //i;
+        };
+      });
+
+    bardata
+      .select(".valuetotald")
+      .transition()
+      .duration(1500)
+      .textTween(function (d) {
+        var nowdata = totaldata.Deaths;
+        var self = this;
+        var oldnum = deformat(self.textContent, "");
+        var i = d3.interpolateRound(oldnum, nowdata);
+
+        return function (t) {
+          return d3.format(format)(i(t)); //i;
+        };
+      });
+
+    bardata
+      .select(".valuetotalr")
+      .transition()
+      .duration(1500)
+      .textTween(function (d) {
+        var nowdata = totaldata.Recovered;
+        var self = this;
+        var oldnum = deformat(self.textContent, "");
+        var i = d3.interpolateRound(oldnum, nowdata);
+
+        return function (t) {
+          return d3.format(format)(i(t)); //i;
+        };
+      });
+  }
+
+  SetCountryInfo(svgname, data, langtype) {
     let svg = d3.select("." + svgname);
 
     console.log("SetCountryInfo : ", svgname);
@@ -336,24 +718,22 @@ export class CoronaWorldList extends Component {
 
     var format = ",.0f";
 
-    console.log("confirmed", confirmed);
+    // var totalvaluedata = svg.select(".totalvalue").data(svgname);
 
-    var totalvaluedata = svg.select(".totalvalue").data(svgname);
+    // totalvaluedata
+    //   .enter()
+    //   .insert("text")
+    //   .attr("class", "totalvalue")
+    //   .attr("x", 100)
+    //   .attr("y", 30)
+    //   .attr("font-size", "25px")
+    //   .style("fill", (d) => this.getColor(d))
+    //   .attr("fill-opacity", 1)
+    //   .attr("font-family", "BMDOHYEON");
 
-    totalvaluedata
-      .enter()
-      .insert("text")
-      .attr("class", "totalvalue")
-      .attr("x", 100)
-      .attr("y", 30)
-      .attr("font-size", "25px")
-      .style("fill", d => this.getColor(d))
-      .attr("fill-opacity", 1)
-      .attr("font-family", "BMDOHYEON")
+    //  .text("토탈 " + confirmed + "  " + deaths + " " + recovered);
 
-      .text("토탈 " + confirmed + "  " + deaths + " " + recovered);
-
-    let bardata2 = svg.selectAll(".barCountry").data(data, function(d) {
+    let bardata2 = svg.selectAll(".barCountry").data(data, function (d) {
       return d.Country;
     });
 
@@ -361,33 +741,57 @@ export class CoronaWorldList extends Component {
       .enter()
       .insert("g", ".axisGCountry")
       .attr("class", "barCountry")
-      // .attr("fill", "none")
-      // .attr("stroke", "blue")
-      // .attr("stroke-width", "1.5px")
-      .attr("transform", function(d, i) {
-        console.log("-----------------------axisSubMain : ", i);
-        var y = 100 + (i % 16) * 60;
-        var x = Math.floor(i / 16) * 235;
-        // console.log("var x", i, Math.floor(i / 30));
-        // if (svgname == "Europe") {
-        //   if (i >= 15) {
-        //     var z = 100 + (i - 15) * 30;
-        //     return "translate(" + "450" + "," + z + ")";
-        //   }
-        //   return "translate(" + "-20" + "," + y + ")";
-        // }
+      .attr("transform", function (d, i) {
+        // console.log("-----------------------axisSubMain : ", i);
+        let x = 0;
+        let y = 0;
+
+        if (svgname == "ListBottom") {
+          y = 0;
+          x = Math.floor(i) * 235;
+
+          return "translate(" + x + "," + y + ")";
+        }
+
+        if (i <= 5) {
+          y = 100;
+          x = 470 + Math.floor(i % 6) * 235;
+        } else if (i <= 11) {
+          y = 160;
+          x = 470 + Math.floor(i % 6) * 235;
+        } else {
+          i = i - 12;
+          y = 220 + Math.floor(i / 8) * 60;
+          x = Math.floor(i % 8) * 235;
+        }
+
         return "translate(" + x + "," + y + ")";
       });
+
     barEnterdata2
+      .append("clipPath")
+      .attr("id", "clip-rect")
       .append("rect")
       .attr("x", 0)
       .attr("class", "rect")
-      //.attr("y", d => y(d[this.state.yAxisAttribute]))
+      .attr("clip-path", "url(#clip-rect)")
       .attr("width", 235)
       .attr("height", 60) //y.bandwidth() - 30)
       .attr("fill", "none")
       .attr("stroke", "white")
-      .attr("stroke-width", "0.5px")
+      .attr("stroke-width", "1px")
+      .attr("y", -45);
+
+    barEnterdata2
+      .append("rect")
+      .attr("x", 0)
+      .attr("class", "rectline")
+      .attr("clip-path", "url(#clip-rect)")
+      .attr("width", 235)
+      .attr("height", 60) //y.bandwidth() - 30)
+      .attr("fill", "none")
+      .attr("stroke", "white")
+      .attr("stroke-width", "1px")
       .attr("y", -45);
 
     barEnterdata2
@@ -396,226 +800,237 @@ export class CoronaWorldList extends Component {
       .attr("y", -45)
       .attr("height", "35")
       .attr("width", "35")
-      .attr("href", function(d) {
-        if (d.Name1 == "중국") {
-          return "./PNG/china.png";
-        } else {
-          return "./PNG/" + d.Country + ".png";
-        }
+      .attr("href", function (d) {
+        return "./FLAG/" + d.Countrycode.toLowerCase() + ".png";
       })
       .attr("class", "imgfrom")
-      .attr("id", function(d) {
+      .attr("id", function (d) {
         return d.Countrycode;
       })
       .attr("text-anchor", "start");
 
     barEnterdata2
       .append("text")
-      .style("fill", d => this.getColor(d))
+      .style("fill", (d) => this.getColor(d))
       .attr("fill-opacity", 0)
-      .attr("font-family", "BMDOHYEON")
+      .attr("clip-path", "url(#clip-rect)")
+      .attr("font-family", function (d) {
+        if (langtype == 1) {
+          return "BMDOHYEON";
+        } else if (langtype == 2) {
+          return "Fjalla One";
+        } else if (langtype == 3) {
+          return "Noto Sans SC";
+        } else if (langtype == 4) {
+          return "Fjalla One";
+        } else if (langtype == 5) {
+          return "Kosugi Maru";
+        }
+      })
       .transition()
       .duration(1500)
-      .text(function(d) {
-        return d.Name1;
+      .text(function (d) {
+        return d.Name;
       })
       .attr("fill-opacity", 1)
-      .attr("font-size", "23px")
+      .attr("font-size", "25px")
       .attr("class", "valueSubMain")
       .attr("text-anchor", "start")
-      .attr("x", 60)
+      .attr("x", 50)
       .attr("y", -20);
 
-    var deformat = function(val, postfix) {
+    var deformat = function (val, postfix) {
       return Number(val.replace(postfix, "").replace(/\,/g, ""));
     };
 
+    var format = ",.0f";
+    var confirmtext = barEnterdata2
+      .append("text")
+      .transition()
+      .duration(1500)
+      .style("fill", (d) => this.getColor(d))
+      .attr("font-family", "Play")
+      .attr("fill-opacity", 1)
+      .attr("font-size", "21px")
+      .attr("class", "valueSubMainc")
+      .attr("text-anchor", "end")
+      .attr("x", 80)
+      .attr("y", 7);
+
+    confirmtext.textTween(function (d) {
+      var nowdata = d.Confirmed;
+      var i = d3.interpolateRound(0, nowdata);
+
+      //console.log("iiii", i);y
+
+      return function (t) {
+        return d3.format(format)(i(t)); //i;
+      };
+    });
+
     barEnterdata2
       .append("text")
       .transition()
       .duration(1500)
-      .style("fill", d => this.getColor(d))
-      .attr("font-family", "Righteous")
-      .tween("text", function(d) {
-        var self = this;
+      .style("fill", (d) => this.getColor(d))
+      .attr("font-family", "Play")
+      .textTween(function (d) {
+        var nowdata = d.Deaths;
+        var i = d3.interpolateRound(0, nowdata);
 
-        var nowdata = d.Confirmed + "/" + d.Deaths + "/" + d.Recovered;
-        var i = d3.interpolateString("0/0/0", nowdata);
-        // var i = d3.interpolate(
-        //   deformat(self.textContent, ""),
-        //   Number(d.Confirmed)
-        // );
-        var prec = (Number(d.Confirmed) + "").split("."),
-          round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
-        return function(t) {
-          self.textContent = i(t);
-          // d3.format(format)(Math.round(i(t) * round) / round) + "";
+        return function (t) {
+          return d3.format(format)(i(t)); //i;
         };
       })
       .attr("fill-opacity", 1)
-      .attr("font-size", "20px")
-      .attr("class", "valueSubMainc")
-      .attr("text-anchor", "start")
-      .attr("x", 10)
-      .attr("y", 5);
-
-    /*
-    barEnterdata2
-      .append("text")
-      .transition()
-      .duration(1500)
-      .style("fill", d => this.getColor(d))
-      //  .attr("font-family", "BMDOHYEON")
-      .tween("text", function(d) {
-        var self = this;
-        var i = d3.interpolate(
-          deformat(self.textContent, ""),
-          Number(d.Confirmed)
-        );
-        var prec = (Number(d.Confirmed) + "").split("."),
-          round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
-        return function(t) {
-          self.textContent =
-            d3.format(format)(Math.round(i(t) * round) / round) + "";
-        };
-      })
-      .attr("fill-opacity", 1)
-      .attr("font-size", "20px")
-      .attr("class", "valueSubMainc")
-      .attr("text-anchor", "start")
-      .attr("x", 60)
-      .attr("y", 0);
+      .attr("font-size", "21px")
+      .attr("class", "valueSubMaind")
+      .attr("text-anchor", "end")
+      .attr("x", 155)
+      .attr("y", 7);
 
     barEnterdata2
       .append("text")
-      .style("fill", d => this.getColor(d))
+      .style("fill", (d) => this.getColor(d))
       .attr("fill-opacity", 0)
-      // .attr("font-family", "BMDOHYEON")
+      .attr("font-family", "Play")
       .transition()
       .duration(1500)
-      .tween("text", function(d) {
-        var self = this;
-        var i = d3.interpolate(
-          deformat(self.textContent, ""),
-          Number(d.Deaths)
-        );
-        var prec = (Number(d.Deaths) + "").split("."),
-          round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
-        return function(t) {
-          self.textContent =
-            d3.format(format)(Math.round(i(t) * round) / round) + "";
+      .textTween(function (d) {
+        var nowdata = d.Recovered;
+        var i = d3.interpolateRound(0, nowdata);
+
+        //console.log("iiii", i);
+        return function (t) {
+          return d3.format(format)(i(t)); //i;
         };
       })
       .attr("fill-opacity", 1)
       .attr("y", 0)
-      .attr("font-size", "20px")
-      .attr("class", "valueSubMaind")
+      .attr("font-size", "21px")
+      .attr("class", "valueSubMainr")
       .attr("text-anchor", "end")
-      .attr("x", 220)
-      .attr("y", 0);
-      */
+      .attr("x", 230)
+      .attr("y", 7);
+
     let barupdate = bardata2
       .transition("2")
       //.duration(1000)
       .ease(d3.easeLinear);
 
-    var barupdatedata2 = barupdate
-      .select(".barCountry")
-      .attr("transform", function(d, i) {
-        var y = 100 + (i % 16) * 60;
-        var x = Math.floor(i / 16) * 235;
+    barupdate.attr("transform", function (d, i) {
+      let x = 0;
+      let y = 0;
+
+      if (svgname == "ListBottom") {
+        y = 0;
+        x = Math.floor(i) * 235;
+
         return "translate(" + x + "," + y + ")";
-      });
+      }
+
+      if (i <= 5) {
+        y = 100;
+        x = 470 + Math.floor(i % 6) * 235;
+      } else if (i <= 11) {
+        y = 160;
+        x = 470 + Math.floor(i % 6) * 235;
+      } else {
+        i = i - 12;
+        y = 220 + Math.floor(i / 8) * 60;
+        x = Math.floor(i % 8) * 235;
+      }
+
+      return "translate(" + x + "," + y + ")";
+    });
 
     var textupdate = barupdate
       .select(".valueSubMain")
-      // .attr("y", 60)
-      //.text("")
+
       .transition()
       .duration(100);
-    // .attr("lang", "zh")
 
-    if (this.langtype == 1) {
-      textupdate.attr("font-family", "BMDOHYEON").text(function(d) {
-        var text = d.Name1;
-        var len = text.length;
-        if (len > 10) {
-          return text.substring(0, 10) + "...";
+    textupdate
+      .attr("font-family", function (d) {
+        if (langtype == 1) {
+          return "BMDOHYEON";
+        } else if (langtype == 2) {
+          return "Fjalla One";
+        } else if (langtype == 3) {
+          return "Noto Sans SC";
+        } else if (langtype == 4) {
+          return "Fjalla One";
+        } else if (langtype == 5) {
+          return "Kosugi Maru";
         }
-        return d.Name1; //  한국어
-      });
-    }
+      })
+      .text(function (d) {
+        if (d.Country == "country") {
+          let str = d.Name;
+          let str_array = str.split(",");
 
-    if (this.langtype == 2) {
-      textupdate.attr("font-family", "Fjalla One").text(function(d) {
-        var text = d.Name2;
-        var len = text.length;
-        if (len > 10) {
-          return text.substring(0, 10) + "...";
+          return str_array[0];
         }
-        return d.Name2; //스페인어
-      });
-    }
-    if (this.langtype == 3) {
-      textupdate.attr("font-family", "Noto Sans SC").text(function(d) {
-        var text = d.Name3;
-        var len = text.length;
-        if (len > 10) {
-          return text.substring(0, 10) + "...";
-        }
-        return d.Name3; // 중국어
-      });
-    }
 
-    if (this.langtype == 4) {
-      textupdate.attr("font-family", "Fjalla One").text(function(d) {
-        var text = d.Name4;
+        var text = d.Name;
         var len = text.length;
-        if (len > 10) {
-          return text.substring(0, 10) + "...";
-        }
-        return d.Name4;
+        // if (len > 10) {
+        //   return text.substring(0, 10) + "...";
+        // }
+        return d.Name; //  한국어
       });
-    }
-    if (this.langtype == 5) {
-      textupdate.attr("font-family", "Kosugi Maru").text(function(d) {
-        var text = d.Name5;
-
-        var len = text.length;
-        if (len > 10) {
-          return text.substring(0, 10) + "...";
-        }
-        return d.Name5;
-      });
-    }
-
-    if (this.langtype >= 5) {
-      this.langtype = 1;
-    } else {
-      this.langtype = this.langtype + 1;
-    }
 
     console.log("langtype : ", this.langtype);
     barupdate
       .select(".valueSubMainc")
       .transition()
       .duration(1500)
-      .tween("text", function(d) {
+      .textTween(function (d) {
         var self = this;
+        var oldnum = deformat(self.textContent, "");
+        var nowdata = d.Confirmed;
+        var i = d3.interpolateRound(oldnum, nowdata);
 
-        var nowdata = d.Confirmed + "/" + d.Deaths + "/" + d.Recovered;
-        var i = d3.interpolateString(self.textContent, nowdata);
-        // var i = d3.interpolate(
-        //   deformat(self.textContent, ""),
-        //   Number(d.Confirmed)
-        // );
-        var prec = (Number(d.Confirmed) + "").split("."),
-          round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
-        return function(t) {
-          self.textContent = i(t);
-          // d3.format(format)(Math.round(i(t) * round) / round) + "";
+        return function (t) {
+          return d3.format(format)(i(t)); //i;
         };
       });
+
+    barupdate
+      .select(".valueSubMaind")
+      .transition()
+      .duration(1500)
+      .textTween(function (d) {
+        var self = this;
+        var oldnum = deformat(self.textContent, "");
+        var nowdata = d.Deaths;
+        var i = d3.interpolateRound(oldnum, nowdata);
+
+        return function (t) {
+          return d3.format(format)(i(t)); //i;
+        };
+      });
+
+    barupdate
+      .select(".valueSubMainr")
+      .transition()
+      .duration(1500)
+      .textTween(function (d) {
+        var self = this;
+        var oldnum = deformat(self.textContent, "");
+        var nowdata = d.Recovered;
+        var i = d3.interpolateRound(oldnum, nowdata);
+
+        return function (t) {
+          return d3.format(format)(i(t)); //i;
+        };
+      });
+
+    var barExit = bardata2
+      .exit()
+      .attr("fill-opacity", 1)
+      .transition()
+      .duration(100);
   }
 
   SetMainDataList(coronadata) {
@@ -633,24 +1048,7 @@ export class CoronaWorldList extends Component {
 
     Data = coronadata.worldrealtimelist;
 
-    // worldrealtimelist: Array(115)
-    // [0 … 99]
-    // 0: { Countrycode: "AF", Country: "Afghanistan", Name1: "아프가니스탄", Name2: "", Name3: "", … }
-    // 1: { Countrycode: "AL", Country: "Albania", Name1: "알바니아", Name2: "", Name3: "", … }
-    // 2: {
-    //   Count
-    //   Countrycode: "AF"
-    //   Country: "Afghanistan"
-    //   Name1: "아프가니스탄"
-    //   Name2: ""
-    //   Name3: ""
-    //   Name4: ""
-    //   Confirmed: 5
-    //   Deaths: 0
-    //   Recovered: 0
-    //   Continent: "남아시아"
-
-    Data.sort(function(a, b) {
+    Data.sort(function (a, b) {
       if (a.Confirmed == b.Confirmed) {
         var r1 = 0;
         var r2 = 0;
@@ -661,272 +1059,18 @@ export class CoronaWorldList extends Component {
       }
     });
 
-    var max_number = 150;
+    let Total = coronadata.WorldNewStatusTotal;
+    let LangType = coronadata.langtype;
+
+    var max_number = 116;
+
+    let DataBottom = [];
+
+    DataBottom = Data.slice(116, 150);
     Data = Data.slice(0, max_number);
-
-    this.SetCountryInfo("List", Data, 0, 0, 0);
-  }
-
-  SetSubMainData(coronadata) {
-    console.log("coronadata : ", coronadata);
-
-    var europe = coronadata.europe;
-    var asia = coronadata.asia;
-    var america = coronadata.america;
-    var africa = coronadata.africa;
-    /*
-    europe:
-    Totalconfirmed: 17922
-    Totaldeath: 710
-    Totalrecovered: 807
-    Worldlist: 
-    */
-
-    // console.log("SubMainData : ", worldrealtimelist);
-    let NorthMidAmericaData = [];
-    let SouthAmericaData = [];
-    let AmericaData = [];
-    let EuropeData = [];
-    let AsiaData = [];
-    let AfricaData = [];
-
-    EuropeData = europe.Worldlist;
-    AsiaData = asia.Worldlist;
-    AfricaData = africa.Worldlist;
-    AmericaData = america.Worldlist;
-
-    // let json = {
-    //   Country: d.Country,
-    //   Name1: d.Name1,
-    //   Confirmed: d.Confirmed,
-    //   Deaths: d.Deaths,
-    //   Recovered: d.Recovered
-    // };
-
-    // this.mainsubtext1.text("국외 코로나19 현황");
-    // let svg = d3.select(".mainSub");
-    // let svgMidAmerica = d3.select(".MidAmerica");
-
-    AmericaData.sort(function(a, b) {
-      if (a.Confirmed == b.Confirmed) {
-        var r1 = 0;
-        var r2 = 0;
-        return r2 - r1;
-      } else {
-        //return Number(a.value) - Number(b.value);
-        return b.Confirmed - a.Confirmed;
-      }
-    });
-    EuropeData.sort(function(a, b) {
-      if (a.Confirmed == b.Confirmed) {
-        var r1 = 0;
-        var r2 = 0;
-        return r2 - r1;
-      } else {
-        //return Number(a.value) - Number(b.value);
-        return b.Confirmed - a.Confirmed;
-      }
-    });
-    AsiaData.sort(function(a, b) {
-      if (a.Confirmed == b.Confirmed) {
-        var r1 = 0;
-        var r2 = 0;
-        return r2 - r1;
-      } else {
-        //return Number(a.value) - Number(b.value);
-        return b.Confirmed - a.Confirmed;
-      }
-    });
-
-    var max_number = 30;
-    EuropeData = EuropeData.slice(0, max_number);
-    AsiaData = AsiaData.slice(0, max_number);
-
-    this.SetCountryInfo(
-      "Africa",
-      AfricaData,
-      africa.Totalconfirmed,
-      africa.Totaldeath,
-      africa.Totalrecovered
-    );
-    // this.SetCountryInfo(
-    //   "America",
-    //   AmericaData,
-    //   america.Totalconfirmed,
-    //   america.Totaldeath,
-    //   america.Totalrecovered
-    // );
-    // // this.SetCountryInfo("SouthAmerica", SouthAmericaData);
-    // this.SetCountryInfo(
-    //   "Europe",
-    //   EuropeData,
-    //   europe.Totalconfirmed,
-    //   europe.Totaldeath,
-    //   europe.Totalrecovered
-    // );
-    // this.SetCountryInfo(
-    //   "Asia",
-    //   AsiaData,
-    //   asia.Totalconfirmed,
-    //   asia.Totaldeath,
-    //   asia.Totalrecovered
-    // );
-    // this.SetCountryInfo(
-    //   "Africa",
-    //   AfricaData,
-    //   africa.Totalconfirmed,
-    //   africa.Totaldeath,
-    //   africa.Totalrecovered
-    // );
-
-    // var max_number = this.submainrotation + 7;
-    // worldrealtimelist = worldrealtimelist.slice(
-    //   this.submainrotation,
-    //   max_number
-    // );
-
-    // if (max_number >= 14) {
-    //   this.submainrotation = 0;
-    // } else {
-    //   this.submainrotation = max_number;
-    // }
-
-    // var deformat = function(val, postfix) {
-    //   return Number(val.replace(postfix, "").replace(/\,/g, ""));
-    // };
-    // var format = ",.0f";
-    // "Country": "Mainland China",
-    //   "Confirmed": 80757,
-    //     "Deaths": 3136,
-    //       "Recovered": 60106
-
-    // let barsecondremove = svg
-    //   .selectAll(".barSubMain")
-    //   .remove()
-    //   .attr("fill-opacity", 0);
-
-    // let bardata2 = svg
-    //   .selectAll(".barSubMain")
-    //   .data(NorthAmericaData, function(d) {
-    //     return d.Country;
-    //   });
-
-    // var barEnterdata2 = bardata2
-    //   .enter()
-    //   .insert("g", ".axisSubMain")
-    //   .attr("class", "barSubMain")
-    //   .attr("transform", function(d, i) {
-    //     console.log("-----------------------axisSubMain : ", i);
-    //     var y = 100 + i * 30;
-    //     return "translate(" + "10" + "," + y + ")";
-    //   });
-
-    // barEnterdata2
-    //   .append("image")
-    //   .attr("y", 550)
-    //   .attr("x", 10)
-    //   .attr("height", "35")
-    //   .attr("width", "45")
-    //   .attr("href", function(d) {
-    //     if (d.CountryName == "중국") {
-    //       return "./PNG/china.png";
-    //     } else {
-    //       return "./PNG/" + d.EngName + ".png";
-    //     }
-    //   })
-    //   .attr("class", "imgfrom")
-    //   .attr("id", function(d) {
-    //     return d.Idx;
-    //   })
-    //   .attr("text-anchor", function() {
-    //     return "start";
-    //   })
-    //   .transition()
-    //   .duration(1500)
-    //   .attr("x", 70)
-    //   .attr("y", -45);
-
-    // barEnterdata2
-    //   .append("text")
-    //   .attr("y", 550)
-    //   .style("fill", d => this.getColor(d))
-    //   .attr("fill-opacity", 0)
-    //   .attr("font-family", "BMDOHYEON")
-    //   .attr("x", 150)
-    //   .transition()
-    //   .duration(1500)
-    //   .text(function(d) {
-    //     return d.Country;
-    //   })
-    //   .attr("fill-opacity", 1)
-    //   .attr("y", 0)
-    //   .attr("font-size", "25px")
-    //   .attr("class", "valueSubMain")
-    //   .attr("text-anchor", "start")
-    //   .attr("x", 50)
-    //   .attr("y", -15);
-
-    // barEnterdata2
-    //   .append("text")
-    //   .attr("y", 550)
-    //   .style("fill", d => this.getColor(d))
-    //   .attr("fill-opacity", 0)
-    //   .attr("font-family", "BMDOHYEON")
-    //   .attr("x", 450)
-    //   .transition()
-    //   .duration(1500)
-    //   .tween("text", function(d) {
-    //     var self = this;
-    //     var i = d3.interpolate(
-    //       deformat(self.textContent, ""),
-    //       Number(d.Confirmed)
-    //     );
-    //     var prec = (Number(d.Confirmed) + "").split("."),
-    //       round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
-    //     return function(t) {
-    //       self.textContent =
-    //         d3.format(format)(Math.round(i(t) * round) / round) + "";
-    //     };
-    //   })
-    //   .attr("fill-opacity", 1)
-    //   .attr("y", 0)
-    //   .attr("font-size", "25px")
-    //   .attr("class", "valueSubMain")
-    //   .attr("text-anchor", "end")
-    //   .attr("x", 350)
-    //   .attr("y", -15);
-
-    // barEnterdata2
-    //   .append("text")
-    //   .attr("y", 550)
-    //   .style("fill", d => this.getColor(d))
-    //   .attr("fill-opacity", 0)
-    //   .attr("font-family", "BMDOHYEON")
-    //   .attr("x", 590)
-    //   .transition()
-    //   .duration(1500)
-    //   .tween("text", function(d) {
-    //     var self = this;
-    //     var i = d3.interpolate(
-    //       deformat(self.textContent, ""),
-    //       Number(d.Deaths)
-    //     );
-    //     var prec = (Number(d.Deaths) + "").split("."),
-    //       round = prec.length > 1 ? Math.pow(10, prec[1].length) : 1;
-    //     return function(t) {
-    //       self.textContent =
-    //         d3.format(format)(Math.round(i(t) * round) / round) + "";
-    //     };
-    //   })
-    //   .attr("fill-opacity", 1)
-    //   .attr("y", 0)
-    //   .attr("font-size", "25px")
-    //   .attr("class", "valueSubMain")
-    //   .attr("text-anchor", "end")
-    //   .attr("x", 450)
-    //   .attr("y", -15);
-
-    //this.maintext1.text(korearealtime.UpdateTime);
+    this.SetCountryInfo("List", Data, LangType);
+    this.SetCountryInfo("ListBottom", DataBottom, LangType);
+    this.SetTotalInfo("List", Total, LangType);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -981,7 +1125,7 @@ export class CoronaWorldList extends Component {
     let mainy2 = 1900;
 
     const style = {
-      backgroundColor: "#282c34"
+      backgroundColor: "#282c34",
     };
 
     return (
@@ -994,7 +1138,9 @@ export class CoronaWorldList extends Component {
             height={1450}
           >
             <g className="mainTitle" transform={`translate( 0,0)`}></g>
+            <g className="mainTop" transform={`translate( 0,0)`}></g>
             <g className="List" transform={`translate( 10,50)`}></g>
+            <g className="ListBottom" transform={`translate( 10,1050)`}></g>
           </svg>
         </div>
       </div>

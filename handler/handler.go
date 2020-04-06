@@ -1584,3 +1584,91 @@ func (handler *Handler) GetCoronaDataByRoyLabData() ResultDataWorldNewDailyStatu
 	return result
 
 }
+
+func (handler *Handler) GetCoronaDataByRoyLabDataName(name int) ResultDataWorldNewDailyStatusName {
+
+	//idx := handler.Ldb.AccountDB.GetKoreaRealTimestatusIdx()
+
+	worldrealtimestatus := handler.Ldb.AccountDB.GetCoronaDataByRoyLabDataName(name)
+
+	totalconfirmed := 0
+	totaldeath := 0
+	totalrecovered := 0
+	for _, v := range worldrealtimestatus {
+		totalconfirmed = totalconfirmed + v.Confirmed
+		totaldeath = totaldeath + v.Deaths
+		totalrecovered = totalrecovered + v.Recovered
+
+	}
+
+	wstotal := WorldNewStatusName{}
+
+	wstotal.Country = "total"
+	wstotal.Confirmed = totalconfirmed
+	wstotal.Deaths = totaldeath
+	wstotal.Recovered = totalrecovered
+
+	switch name {
+	case 1:
+		wstotal.Name = "토탈,확진,사망,회복"
+	case 2:
+		wstotal.Name = "Total,Casos,Fallecidos,Recuperados"
+	case 3:
+		wstotal.Name = "累计,确诊,死亡,治愈"
+	case 4:
+		wstotal.Name = "Totale,casi,defunto,recuperato"
+	case 5:
+		wstotal.Name = "合計,感染,死亡,回復"
+	case 6:
+		wstotal.Name = "Total,Cases,Deaths,Recovered"
+	}
+
+	//worldrealtimestatus = append(worldrealtimestatus, wstotal)
+
+	ws := WorldNewStatusName{}
+
+	ws.Country = "country"
+	ws.Confirmed = 99999999
+
+	switch name {
+	case 1:
+		ws.Name = "국가,확진,사망,회복"
+	case 2:
+		ws.Name = "pais o territorio,Casos,Fallecidos,Recuperados"
+	case 3:
+		ws.Name = "国家,确诊,死亡,治愈"
+	case 4:
+		ws.Name = "이태리,Casos,Fallecidos,Recuperados"
+	case 5:
+		ws.Name = "国,感染,死亡,回復"
+	case 6:
+		ws.Name = "Country,Cases,Deaths,Recovered"
+	}
+
+	//worldrealtimestatus = append(worldrealtimestatus, ws)
+
+	// 	var firstjson = {
+	//       Countrycode: "",
+	//       Country: "Country",
+	//       Name1: "국가,확진,사망,회복",
+	//       Name2: "pais o territorio,Casos,Fallecidos,Recuperados",
+	//       Name3: "国家,确诊,死亡,治愈",
+	//       Name4: "이태리,Casos,Fallecidos,Recuperados",
+	//       Name5: "国,感染,死亡,回復",
+	//       Name6: "Country,Cases,Deaths,Recovered",
+	//       Confirmed: 9999999,
+	//       Deaths: 0,
+	//       Recovered: 0,
+	//     };
+
+	//fmt.Println("GetCoronaDataWorldRealTime worldrealtimestatus", worldrealtimestatus)
+	result := ResultDataWorldNewDailyStatusName{}
+
+	result.WorldNewStatusTotal = wstotal
+	result.WorldNewStatusTop = ws
+	result.WorldNewStatusList = worldrealtimestatus
+	result.LangType = name
+
+	return result
+
+}

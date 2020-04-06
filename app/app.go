@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 
 	"optool/config"
@@ -170,6 +171,7 @@ func (a *App) setRouters() {
 	scrap.GET("/ScrapRoyLab", a.ScrapCollyCorona_roylabdata)
 
 	scrap.GET("/getworlddatabyroylab", a.GetCoronaDataByRoyLabData)
+	scrap.GET("/getworlddatabyroylabbyname/:name", a.GetCoronaDataByRoyLabDataName)
 
 	scrap.GET("/test", a.Test)
 
@@ -288,6 +290,19 @@ func (a *App) GetCoronaDataWorldDailyNowListByContinent(c *gin.Context) {
 
 	fmt.Println("call GetCoronaDataGroupExample")
 	coronadata := a.handler.GetCoronaDataWorldDailyNowListByContinent()
+
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.JSON(http.StatusOK, coronadata)
+
+}
+
+func (a *App) GetCoronaDataByRoyLabDataName(c *gin.Context) {
+
+	name := c.Param("name")
+
+	nameint, _ := strconv.Atoi(name)
+	fmt.Println("call GetCoronaDataGroupExample")
+	coronadata := a.handler.GetCoronaDataByRoyLabDataName(nameint)
 
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	c.JSON(http.StatusOK, coronadata)

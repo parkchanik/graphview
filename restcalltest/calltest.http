@@ -92,6 +92,12 @@ content-type: application/json
 
 
 
+// GET RoyLabData 서버에서 언어 변경해서 준다 
+GET http://localhost:9888/scrap/getworlddatabyroylabbyname HTTP/1.1
+content-type: application/json
+
+#####
+
 
 
 

@@ -55,3 +55,39 @@ func (db *GormAccountDB) GetWorldDataByRoyLabData() []WorldNewStatus {
 	return worldnewstatuslist
 
 }
+
+func (db *GormAccountDB) GetCoronaDataByRoyLabDataName(name int) []WorldNewStatusName {
+
+	var worldnewstatuslist []WorldNewStatusName
+
+	qry := "SELECT B.Countrycode AS countrycode , B.Country AS country, "
+
+	switch name {
+	case 1:
+		qry = qry + " B.Name1 AS name  "
+	case 2:
+		qry = qry + " B.Name2 AS name  "
+	case 3:
+		qry = qry + " B.Name3 AS name  "
+	case 4:
+		qry = qry + " B.Name4 AS name  "
+	case 5:
+		qry = qry + " B.Name5 AS name  "
+	case 6:
+		qry = qry + " B.Name6 AS name  "
+	default:
+		qry = qry + " B.Name1 AS name  "
+	}
+
+	qry = qry + " , A.Confirmed AS confirmed, A.Deaths AS deaths , A.Recovered AS recovered , B.Continent AS continent"
+	qry = qry + " FROM RoyLabData A JOIN CountryInfo B "
+	qry = qry + " ON A.Nation = B.Country  "
+
+	if err := db.sqlgormdb.Raw(qry).Scan(&worldnewstatuslist).Error; err != nil {
+		fmt.Println("error  :", err.Error())
+		return worldnewstatuslist
+	}
+
+	return worldnewstatuslist
+
+}
