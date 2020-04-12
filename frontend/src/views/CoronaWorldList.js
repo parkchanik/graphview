@@ -220,7 +220,7 @@ export class CoronaWorldList extends Component {
     this.mainSubInterval = setInterval(() => {
       this.getMainList(this.langtype);
       this.langtype = this.langtype + 1;
-      if (this.langtype >= 6) {
+      if (this.langtype > 6) {
         this.langtype = 1;
       }
     }, 5000);
@@ -1031,6 +1031,12 @@ export class CoronaWorldList extends Component {
       .attr("fill-opacity", 1)
       .transition()
       .duration(100);
+
+    barExit
+      .attr("transform", function (d) {
+        return "translate(-5000,0)";
+      })
+      .remove();
   }
 
   SetMainDataList(coronadata) {

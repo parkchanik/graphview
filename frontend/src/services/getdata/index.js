@@ -273,3 +273,53 @@ export const getCoronaWorldroylabname = (name) => {
   });
   return promise;
 };
+
+export const getElection = () => {
+  var address = "http://localhost:9888/scrap/getelection";
+
+  let promise = new Promise((resolve) => {
+    fetch(address)
+      .then((results) => results.json())
+      .then((jsonData) => {
+        //console.log("jsondata");
+        //console.log(jsonData);
+
+        resolve({
+          coronadata: jsonData,
+        });
+      })
+      .then((data) => {
+        console.log("fetch then-- data", data);
+      })
+      .catch((error) => {
+        console.log("error");
+        console.log(error);
+      });
+  });
+  return promise;
+};
+
+export const getAllElection = () => {
+  var address = "http://localhost:9888/scrap/getallelection";
+
+  let promise = new Promise((resolve) => {
+    fetch(address)
+      .then((results) => results.json())
+      .then((jsonData) => {
+        //console.log("jsondata");
+        //console.log(jsonData);
+
+        resolve({
+          coronadata: jsonData,
+        });
+      })
+      .then((data) => {
+        console.log("fetch then-- data", data);
+      })
+      .catch((error) => {
+        console.log("error");
+        console.log(error);
+      });
+  });
+  return promise;
+};

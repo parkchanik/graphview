@@ -73,21 +73,21 @@ func (a *App) Initialize() {
 
 func (a *App) Run(port string) {
 
-	go func() {
+	// go func() {
 
-		for {
-			err := a.handler.ScrapCollyCorona_roylabdata()
-			if err != nil {
-				fmt.Println("ScrapCollyCorona_roylabdata Error : ", err.Error())
-			} else {
-				fmt.Println("ScrapCollyCorona_roylabdata Success ")
-			}
+	// 	for {
+	// 		err := a.handler.ScrapCollyCorona_roylabdata()
+	// 		if err != nil {
+	// 			fmt.Println("ScrapCollyCorona_roylabdata Error : ", err.Error())
+	// 		} else {
+	// 			fmt.Println("ScrapCollyCorona_roylabdata Success ")
+	// 		}
 
-			time.Sleep(time.Minute * 10)
+	// 		time.Sleep(time.Minute * 10)
 
-		}
+	// 	}
 
-	}()
+	// }()
 
 	err := a.Router.Run(port)
 	if err != nil {
@@ -173,6 +173,11 @@ func (a *App) setRouters() {
 	scrap.GET("/getworlddatabyroylab", a.GetCoronaDataByRoyLabData)
 	scrap.GET("/getworlddatabyroylabbyname/:name", a.GetCoronaDataByRoyLabDataName)
 
+	scrap.GET("/getelection", a.GetElection)
+	scrap.GET("/getallelection", a.GetAllElection)
+
+	scrap.GET("/ScrapBiryeElection", a.ScrapCollyBiryeElection)
+
 	scrap.GET("/test", a.Test)
 
 	api.GET("/GetServerNowUser", a.GetServerNowUser)
@@ -194,6 +199,16 @@ func (a *App) ScrapCollyCorona_roylabdata(c *gin.Context) {
 
 	fmt.Println("call ScrapCollyCorona_worldometers")
 	err := a.handler.ScrapCollyCorona_roylabdata()
+	if err != nil {
+		fmt.Println("Scrap Error ", err.Error())
+	}
+
+}
+
+func (a *App) ScrapCollyBiryeElection(c *gin.Context) {
+
+	fmt.Println("call ScrapCollyBiryeElection")
+	err := a.handler.ScrapCollyBiryeElection()
 	if err != nil {
 		fmt.Println("Scrap Error ", err.Error())
 	}
@@ -283,6 +298,26 @@ func (a *App) WorldNewDailyUpdate(c *gin.Context) {
 
 	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 	c.JSON(http.StatusOK, maindata)
+
+}
+
+func (a *App) GetElection(c *gin.Context) {
+
+	fmt.Println("call GetCoronaDataGroupExample")
+	coronadata := a.handler.GetElection()
+
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.JSON(http.StatusOK, coronadata)
+
+}
+
+func (a *App) GetAllElection(c *gin.Context) {
+
+	fmt.Println("call GetAllElection")
+	coronadata := a.handler.GetAllElection()
+
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.JSON(http.StatusOK, coronadata)
 
 }
 

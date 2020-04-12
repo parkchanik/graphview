@@ -17,6 +17,9 @@ import { CoronaWorldList } from "./views/CoronaWorldList";
 import { MapTest } from "./views/MapTest";
 import { KoreaMap } from "./views/KoreaMap";
 import { Cloud } from "./views/Cloud";
+//import { RectGraph } from "./views/RectGraph";
+import { TreeMap } from "./views/TreeMap";
+import { TreeMapElection } from "./views/TreeMapElection";
 
 export default class App extends Component {
   displayName = App.name;
@@ -28,23 +31,23 @@ export default class App extends Component {
         <Route path="/counter" component={Counter} />
         <Route path="/bargraphtest" component={BarGraphTest} />
         <Route path="/map" component={MapTest} />
-
         <Route path="/bargraphtestLocal" component={BarGraphTestLocal} />
         <Route path="/ryukimyang" component={BarGraphRyuKimYang} />
         <Route path="/lim" component={BarGraphHistoryLim} />
         <Route path="/limavgh" component={BarGraphHistoryLimAVGandH} />
         <Route path="/andygoden" component={BarGraphHistoryAndyGoden} />
         <Route path="/RKY" component={BarGraphHistoryRKY} />
-
         <Route path="/koreamap" component={KoreaMap} />
         <Route path="/cloud" component={Cloud} />
-
         <Route path="/limvskbo7" component={BarGraphHistoryLimVSKBO7YEAR} />
-
         <Route path="/corona" component={BarGraphHistoryCorona} />
-
         <Route path="/worldcorona" component={CoronaWorldList} />
+
+        <Route path="/treemap" component={TreeMap} />
+        <Route path="/treemapelection" component={TreeMapElection} />
       </div>
     );
   }
 }
+
+// <Route path="/rectgraph" component={RectGraph} />
