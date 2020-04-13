@@ -361,6 +361,7 @@ func (handler *Handler) ScrapCollyBiryeElection() error {
 		Delay:       5 * time.Second,
 	})
 
+	///
 	//main := Main{}
 	newcolly.OnHTML("body", func(e *colly.HTMLElement) {
 
